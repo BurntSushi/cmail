@@ -232,16 +232,24 @@ func gobble(buf *bufio.Reader) <-chan string {
 
 // emailLines sends a chunk of lines via email.
 func emailLines(lines []string) {
-	c := cmd.New(flagSendMail, "-t")
-	date := time.Now().Format("Mon, 02 Jan 2006 15:04:05 -0700")
-	fmt.Fprintf(c.BufStdin,
-		`Subject: %s%s
+	var c *cmd.Command
+	subj := fmt.Sprintf("%s%s", flagSubjectPrefix, fullProgram)
+
+	if flagSendMail == "mailx" {
+		c = cmd.New(flagSendMail, "-s", subj, flagTo)
+		fmt.Print(c.BufStdin, "%s", strings.Join(lines, ""))
+	} else {
+		c = cmd.New(flagSendMail, "-t")
+		date := time.Now().Format("Mon, 02 Jan 2006 15:04:05 -0700")
+		fmt.Fprintf(c.BufStdin,
+			`Subject: %s
 From: %s
 To: %s
 Date: %s
 
-%s`, flagSubjectPrefix, fullProgram, flagTo, flagTo, date,
-		strings.Join(lines, ""))
+%s`, subj, flagTo, flagTo, date, strings.Join(lines, ""))
+	}
+
 	if err := c.Run(); err != nil {
 		log.Printf("Error sending mail '%s -t': %s.", flagSendMail, err)
 	}
