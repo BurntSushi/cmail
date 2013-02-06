@@ -18,7 +18,8 @@ address to send mail to.
 
 Use the `-sendmail` and `-subj` options to match your preferences and
 environment. (The sendmail command is invoked with `cmd -t` and given the
-email body/headers on stdin.)
+email body/headers on stdin, unless `mailx` is used. In which case, it is
+invoked as `mailx -s SUBJECT TO` and given the email body on stdin.)
 
 
 ```

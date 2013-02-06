@@ -237,7 +237,7 @@ func emailLines(lines []string) {
 
 	if flagSendMail == "mailx" {
 		c = cmd.New(flagSendMail, "-s", subj, flagTo)
-		fmt.Print(c.BufStdin, "%s", strings.Join(lines, ""))
+		fmt.Print(c.BufStdin, strings.Join(lines, ""))
 	} else {
 		c = cmd.New(flagSendMail, "-t")
 		date := time.Now().Format("Mon, 02 Jan 2006 15:04:05 -0700")
