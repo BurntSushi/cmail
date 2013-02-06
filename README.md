@@ -4,8 +4,9 @@ intervals.
 The main purpose of cmail is to track long running commands with periodic
 email updates.
 
-Assuming you have [GOPATH setup](http://golang.org/doc/code.html#GOPATH), cmail 
-can be installed with
+Assuming you have
+[Go environment working](http://golang.org/doc/code.html#GOPATH),
+cmail can be installed with
 
 ```bash
 go get github.com/BurntSushi/cmail
@@ -45,5 +46,35 @@ when EOF is reached. If no command is given, data is read from stdin.
 -to
     The email address to send mail to. By default, this is set to the
     value of the $EMAIL environment variable.
+```
+
+## Examples
+
+Send whatever is on stdin:
+
+```bash
+cmail <<EOF
+This is going to
+my email
+EOF
+```
+
+Report all 80 column violations in Lua files. Don't show output in terminal:
+
+```bash
+find ./ -name '*.lua' -print0 | xargs -0 colcheck | cmail -no-pass
+```
+
+Run a `du` command on a huge directory, and send an incremental email update 
+every second:
+
+```bash
+cmail -period 1s -inc du -csh *
+```
+
+Run a really long command and send the entire output every hour:
+
+```bash
+cmail -period 1h a-really-long-command
 ```
 

@@ -64,7 +64,7 @@ func init() {
 
 func main() {
 	if len(flagTo) == 0 {
-		log.Println("I don't know who to send email to. Please use the\n"+
+		log.Println("I don't know who to send email to. Please use the\n" +
 			"'-to' flag or set the EMAIL environment variable.\n")
 		flag.Usage()
 		os.Exit(1)
@@ -85,6 +85,9 @@ func main() {
 	} else {
 		program = exec.Command(flag.Arg(0), flag.Args()[1:]...)
 		fullProgram = strings.Join(flag.Args(), " ")
+		if len(fullProgram) > 200 {
+			fullProgram = fullProgram[0:201]
+		}
 
 		stdout, err := program.StdoutPipe()
 		assert(err, "Could not get stdout pipe: %s.", err)
@@ -206,7 +209,7 @@ func sender() chan<- []string {
 //
 // gobble will quit the program with an error message if the input source
 // cannot be read.
-func gobble(buf *bufio.Reader) <-chan string{
+func gobble(buf *bufio.Reader) <-chan string {
 	lines := make(chan string)
 	go func() {
 		for {
